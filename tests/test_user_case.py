@@ -90,5 +90,8 @@ def test_currency_check(driver, wait, base_url, currency_to, currency_from, page
 
     assert len(prices_before) == len(prices_after)
 
-    for before, after in zip(prices_before, prices_after):
+    for i,  (before, after) in zip(prices_before, prices_after):
         assert before != after
+        f"Цена не изменилась для элемента #{i}: "
+        f"было '{before}', стало '{after}' "
+        f"(валюта {currency_from} → {currency_to})"
