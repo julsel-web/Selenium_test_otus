@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
-
 from page_object.elements.base_element import BaseElement
+import allure
+
 
 
 class LoginForm(BaseElement):
@@ -10,7 +11,9 @@ class LoginForm(BaseElement):
     HEADER_LOGOUT = (By.CSS_SELECTOR, "#header_logout")
     EMPLOYEE_INFOS = (By.CSS_SELECTOR, "#employee_infos")
 
+    @allure.step("Вход пользователя с username: {username}")
     def login(self, username, password):
+        self.logger.info(f"Вход пользователя: {username}")
         login_items = {
             self.EMAIL: username,
             self.PASSWORD: password,
@@ -19,6 +22,8 @@ class LoginForm(BaseElement):
         self.send_keys(login_items)
         self.click(self.SUBMIT)
 
+    @allure.step("Выход пользователя")
     def logout(self):
+        self.logger.info("Выход пользователя")
         self.click(self.EMPLOYEE_INFOS)
         self.click(self.HEADER_LOGOUT)

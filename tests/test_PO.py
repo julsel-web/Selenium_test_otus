@@ -1,6 +1,6 @@
 import pytest
 import uuid
-
+import allure
 from page_object.main_page import MainPage
 from page_object.elements.login_form import LoginForm
 from page_object.cart_page import CartPage
@@ -9,39 +9,45 @@ from page_object.checkout_page import CheckoutPage
 from page_object.elements.registr_form import ReristForm
 from page_object.catalog_admin_page import CatalogAdminPage
 
-
+@allure.feature("Админка")
+@allure.story("Логин/Логаут")
 def test_admin_login_logout(driver, base_url):
-    driver.get(f"{base_url}/administration")
+    with allure.step("Переход на страницу админки"):
+        driver.get(f"{base_url}/administration")
+
     LoginForm(driver).login("admin@example.com","Admin123!")
     CheckoutPage(driver).checkout_admin_page()
     LoginForm(driver).logout()
     CheckoutPage(driver).checkout_login_page()
 
+@allure.feature("Админка")
+@allure.story("Добавление продукта")
 def test_add_card(driver, base_url):
+    with allure.step("Переход на страницу админки и логин"):
+        driver.get(f"{base_url}/administration")
+        LoginForm(driver).login("admin@example.com", "Admin123!")
 
-    driver.get(f"{base_url}/administration")
-    LoginForm(driver).login("admin@example.com","Admin123!")
     CatalogAdminPage(driver).catalog_page()
     CatalogAdminPage(driver).products_page()
     CatalogAdminPage(driver).add_new_products("combinations", "NEW TEST CARD")
     CheckoutPage(driver).checkout_add_new_card("NEW TEST CARD")
 
+#Сейчас тест падает специально, чтобы проверить скриншот. В админке создала карточку с таким же названием и тест не проходит проверку ассертом
+@allure.feature("Админка")
+@allure.story("Удаление продукта")
 def test_delete_card(driver, base_url):
+    with allure.step("Переход на страницу админки и логин"):
+        driver.get(f"{base_url}/administration")
+        LoginForm(driver).login("admin@example.com", "Admin123!")
 
-    driver.get(f"{base_url}/administration")
-    LoginForm(driver).login("admin@example.com","Admin123!")
     CatalogAdminPage(driver).catalog_page()
     CatalogAdminPage(driver).products_page()
     name = CatalogAdminPage(driver).delete_products("NEW TEST CARD")
     CheckoutPage(driver).checkout_delete_product("NEW TEST CARD")
 
-
-
-
-
-
 #Добавить в корзину случайный товар с главной страницы и проверить что он появился в корзине
-
+@allure.feature("Корзина")
+@allure.story("Добавление случайного продукта")
 def test_homepage_elements(driver, base_url):
     driver.get(base_url)
     product_href = MainPage(driver).choose_random_product_and_get_href()
@@ -54,8 +60,8 @@ def test_homepage_elements(driver, base_url):
 
 
 #Проверить, что при переключении валют цены на товары меняются на главной
-#Проверить, что при переключении валют цены на товары меняются в каталоге
-
+@allure.feature("Валюта")
+@allure.story("Проверка смены валют")
 @pytest.mark.parametrize("currency_from, currency_to", [("USD", "EUR"), ("EUR", "USD")])
 @pytest.mark.parametrize("page_path", ["/", "/3-clothes"])
 def test_currency_check(driver,base_url, currency_to, currency_from, page_path):
@@ -69,6 +75,8 @@ def test_currency_check(driver,base_url, currency_to, currency_from, page_path):
         f"было '{before}', стало '{after}' "
         f"(валюта {currency_from} → {currency_to})"
 
+@allure.feature("Регистрация")
+@allure.story("Регистрация нового пользователя")
 def test_regictration(driver, base_url):
     driver.get(f"{base_url}/registration")
     email = f"test_{uuid.uuid4().hex[:8]}@example.com"

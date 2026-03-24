@@ -1,10 +1,7 @@
-import random
-from os import wait
-
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
 from page_object.elements.base_element import BaseElement
 
 
@@ -23,28 +20,41 @@ class CatalogAdminPage(BaseElement):
     DELETEPRODUCT = (By.CSS_SELECTOR, "#product_footer_actions_delete")
     BTNDELETE = (By.XPATH, "//button[normalize-space(text())='Delete']")
 
+    @allure.step("Переход на страницу каталога")
     def catalog_page(self):
+        self.logger.info("Переход на страницу каталога")
         self.click(self.CATALOG)
 
+    @allure.step("Переход на страницу продуктов")
     def products_page(self):
+        self.logger.info("Переход на страницу продуктов")
         self.click_element_safe(self.PRODUCTS)
 
+    @allure.step("Поиск всех продуктов на текущей странице")
     def find_all_products(self):
+        self.logger.info("Поиск всех продуктов на текущей странице")
         self.wait_element_visible(self.AllPRODUCTS)
         products = self.driver.find_elements(*self.AllPRODUCTS)
         return [el.text.strip() for el in products]
 
+    @allure.step("Проверка наличия следующей страницы")
     def has_next_page(self):
-        return len(self.driver.find_elements(*self.BTNNEXT)) > 0
+        has_next = len(self.driver.find_elements(*self.BTNNEXT)) > 0
+        self.logger.info(f"Есть следующая страница: {has_next}")
+        return has_next
 
+    @allure.step("Переход на следующую страницу")
     def go_to_next_page(self):
+        self.logger.info("Переход на следующую страницу")
         next_btn = self.wait_element_visible(self.BTNNEXT)
         self.click(self.BTNNEXT)
         self.wait_until(
             EC.staleness_of(self.driver.find_elements(*self.AllPRODUCTS)[0])
         )
 
+    @allure.step("Получение всех продуктов каталога")
     def get_all_products(self):
+        self.logger.info("Получение всех продуктов каталога")
         all_products = []
 
         while True:
@@ -57,7 +67,9 @@ class CatalogAdminPage(BaseElement):
 
         return all_products
 
+    @allure.step("Добавление нового продукта: {name}")
     def add_new_products(self, value, name):
+        self.logger.info(f"Добавление нового продукта: {name}")
         BTN_PRIMARY = (By.CSS_SELECTOR, f'button[data-value="{value}"]')
         self.click(self.ADDNEWCARD)
         iframe = self.driver.find_element(*self.NAMEIFRAME)
@@ -74,13 +86,16 @@ class CatalogAdminPage(BaseElement):
             and d.find_element(*self.GOTOCATALOG).is_enabled()
         )
         self.click(self.GOTOCATALOG)
+        self.logger.info(f"Продукт {name} добавлен")
         return name
 
+    @allure.step("Удаление продукта: {product_name}")
     def delete_products(self, product_name):
-        row = (By.XPATH, f"//a[normalize-space(text())='{product_name}']/ancestor::tr")
-        delete_product = self.driver.find_element(*row)
-        delete_product.click()
+        self.logger.info(f"Удаление продукта: {product_name}")
+        row = (By.XPATH, f"//td[@class='link-type column-name text-left']/a[normalize-space(text())='{product_name}']")
+        self.click_element_safe(row)
         self.click(self.BTNTPGGLE)
         self.click(self.DELETEPRODUCT)
         self.click(self.BTNDELETE)
+        self.logger.info(f"Продукт {product_name} удалён")
         return product_name

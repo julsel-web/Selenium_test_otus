@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-
+import allure
 from page_object.elements.base_element import BaseElement
 
 
@@ -16,7 +16,9 @@ class ReristForm(BaseElement):
     Checkbox_psgdr = (By.XPATH, "//input[@name='psgdpr']/following-sibling::span")
     Checkbox_privacy = (By.XPATH, "//input[@name='customer_privacy']/..")
 
+    @allure.step("Регистрация пользователя: {Ft_name} {LT_name}, email: {Email}")
     def registr(self, Gender, Ft_name, LT_name, Email, Password, Hb):
+        self.logger.info(f"Регистрация пользователя: {Ft_name} {LT_name}, email: {Email}")
         gender = (
             By.XPATH,
             f"//label[contains(@class, 'radio-inline') and contains(., '{Gender}')]",
@@ -35,3 +37,4 @@ class ReristForm(BaseElement):
             self.click_element_safe(checkbox)
 
         self.click_element_safe(self.Save_button)
+        self.logger.info("Регистрация завершена")
