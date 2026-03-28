@@ -3,10 +3,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from page_object.base_page import BasePage
-from page_object.elements.base_element import BaseElement
 
 
-class CatalogAdminPage(BaseElement):
+class CatalogAdminPage(BasePage):
     def __init__(self, page: BasePage):
         self.page = page
         self.driver = page.driver
@@ -76,6 +75,11 @@ class CatalogAdminPage(BaseElement):
         self.click(self.GO_TO_CATALOG)
         return name
 
+    def checkout_add_new_card(self, name):
+        products = self.find_all_products()
+        assert name in products
+
+
     def delete_products(self, product_name):
         row = (By.XPATH, f"//td[@class='link-type column-name text-left']/a[normalize-space(text())='{product_name}']")
         self.click_element_safe(row)
@@ -83,3 +87,7 @@ class CatalogAdminPage(BaseElement):
         self.click(self.DELETE_PRODUCT)
         self.click(self.BTN_DELETE)
         return product_name
+
+    def checkout_delete_product(self, name):
+        products = self.find_all_products()
+        assert name not in products

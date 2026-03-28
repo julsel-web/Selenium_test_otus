@@ -24,7 +24,7 @@ def test_add_card(page: BasePage):
     CatalogAdminPage(page).catalog_page()
     CatalogAdminPage(page).products_page()
     CatalogAdminPage(page).add_new_products("combinations", "NEW TEST CARD")
-    AssertionHelper(page).checkout_add_new_card("NEW TEST CARD")
+    CatalogAdminPage(page).checkout_add_new_card("NEW TEST CARD")
 
 def test_delete_card(page: BasePage):
     page.open("/administration")
@@ -32,7 +32,7 @@ def test_delete_card(page: BasePage):
     CatalogAdminPage(page).catalog_page()
     CatalogAdminPage(page).products_page()
     name = CatalogAdminPage(page).delete_products("NEW TEST CARD")
-    AssertionHelper(page).checkout_delete_product(name)
+    CatalogAdminPage(page).checkout_delete_product(name)
 
 #Добавить в корзину случайный товар с главной страницы и проверить что он появился в корзине
 

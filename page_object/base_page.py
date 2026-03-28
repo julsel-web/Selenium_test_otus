@@ -36,3 +36,8 @@ class BasePage:
 
     def wait_until(self, condition):
         return WebDriverWait(self.driver, 5).until(condition)
+
+    def send_keys_for_fields(self, locator,value):
+        element = self.wait_element_visible(locator)
+        element.clear()
+        element.send_keys(value)

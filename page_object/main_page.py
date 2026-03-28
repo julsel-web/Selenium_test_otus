@@ -3,10 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from page_object.base_page import BasePage
-from page_object.elements.base_element import BaseElement
 
 
-class MainPage(BaseElement):
+class MainPage(BasePage):
     def __init__(self, page: BasePage):
         self.page = page
         self.driver = page.driver
