@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-
+import allure
 from page_object.base_page import BasePage
 
 
@@ -20,6 +20,7 @@ class RegistrationForm(BasePage):
     CHECKBOX_PSGDR = (By.XPATH, "//input[@name='psgdpr']/following-sibling::span")
     CHECKBOX_PRIVACY = (By.XPATH, "//input[@name='customer_privacy']/..")
 
+    @allure.step("Регистрация пользователя: {Ft_name} {LT_name}, email: {Email}")
     def registration(self, Gender, First_name, Last_name, Email, Password, Happy_Birthday):
         gender = (
             By.XPATH,
@@ -35,3 +36,4 @@ class RegistrationForm(BasePage):
             self.click_element_safe(checkbox)
 
         self.click_element_safe(self.SAVE_BUTTON)
+        self.logger.info("Регистрация завершена")
