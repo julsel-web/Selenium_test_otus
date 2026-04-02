@@ -10,7 +10,7 @@ from page_object.base_page import BasePage
 def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
     parser.addoption("--headless", action="store_true")
-    parser.addoption("--base-url", default="http://localhost:8081")
+    parser.addoption("--base-url", default="http://host.docker.internal:8081")
 
 
 @pytest.fixture()
@@ -30,13 +30,18 @@ def driver(request):
         options = FFOptions()
         if headless:
             options.add_argument("--headless")
-        service = FFService(executable_path="/snap/bin/geckodriver")
-        browser = webdriver.Firefox(service=service, options=options)
+        browser = webdriver.Firefox(service=FFService(), options=options)
     elif browser_name == "chrome":
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
-        browser = webdriver.Chrome(options=options)
+
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        service = ChromeService("/usr/bin/chromedriver")
+        options.add_argument("--window-size=1920,1080")
+        browser = webdriver.Chrome(service=service, options=options)
     elif browser_name == "ya":
         service = ChromeService(
             executable_path="/Users/uliatuz/Downloads/drivers/yandexdriver"
