@@ -12,6 +12,10 @@ class BasePage:
         self.base_url = base_url
         self.logger = get_logger(self.__class__.__name__)
 
+    def open(self, path=""):
+        url = f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
+        self.driver.get(url)
+
     @allure.step("Клик по элементу {locator} с паузой {pause}")
     def click(self, locator: tuple, pause=0.3):
         self.logger.info(f"Клик по элементу: {locator} с паузой {pause}")
@@ -43,6 +47,7 @@ class BasePage:
     def wait_until(self, condition):
         self.logger.info(f"Ожидание условия: {condition}")
         return WebDriverWait(self.driver, 5).until(condition)
+
 
     @allure.step("Ввод значений {locator}:{value}")
     def send_keys_for_fields(self, locator, value):

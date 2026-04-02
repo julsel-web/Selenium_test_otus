@@ -8,6 +8,11 @@ class CartPage(BasePage):
         self.page = page
         self.driver = page.driver
 
+
+class CartPage(BasePage):
+    def __init__(self, page: BasePage):
+        self.page = page
+        self.driver = page.driver
     PRODUCT_TO_CART = (By.CSS_SELECTOR, "div.product-line-info a.label")
 
     @allure.step("Проверка товара в корзине")

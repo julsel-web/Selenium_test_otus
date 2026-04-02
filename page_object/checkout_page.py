@@ -2,7 +2,6 @@ import allure
 from selenium.webdriver.common.by import By
 from page_object.base_page import BasePage
 
-
 class AssertionHelper(BasePage):
     def __init__(self, page: BasePage):
         self.page = page

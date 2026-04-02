@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.service import Service as FFService
 from selenium.webdriver.firefox.options import Options as FFOptions
+from page_object.base_page import BasePage
 
 
 SCREENSHOT_DIR = os.path.join(os.getcwd(), "screenshots")
@@ -14,13 +15,16 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome")
     parser.addoption("--headless", action="store_true")
-    parser.addoption("--base-url", default="http://localhost:8081")
+    parser.addoption("--base-url", default="http://host.docker.internal:8081")
 
 
 @pytest.fixture()
 def base_url(request):
     return request.config.getoption("base_url")
 
+@pytest.fixture
+def page(driver, base_url):
+    return BasePage(driver, base_url)
 
 @pytest.fixture(scope="function")
 def driver(request):
@@ -31,13 +35,18 @@ def driver(request):
         options = FFOptions()
         if headless:
             options.add_argument("--headless")
-        service = FFService(executable_path="/snap/bin/geckodriver")
-        browser = webdriver.Firefox(service=service, options=options)
+        browser = webdriver.Firefox(service=FFService(), options=options)
     elif browser_name == "chrome":
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
-        browser = webdriver.Chrome(options=options)
+
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        service = ChromeService("/usr/bin/chromedriver")
+        options.add_argument("--window-size=1920,1080")
+        browser = webdriver.Chrome(service=service, options=options)
     elif browser_name == "ya":
         service = ChromeService(
             executable_path="/Users/uliatuz/Downloads/drivers/yandexdriver"
