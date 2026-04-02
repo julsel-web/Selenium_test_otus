@@ -7,8 +7,9 @@ import allure
 
 
 class BasePage:
-    def __init__(self, driver):
+    def __init__(self, driver,base_url):
         self.driver = driver
+        self.base_url = base_url
         self.logger = get_logger(self.__class__.__name__)
 
     @allure.step("Клик по элементу {locator} с паузой {pause}")
@@ -42,3 +43,10 @@ class BasePage:
     def wait_until(self, condition):
         self.logger.info(f"Ожидание условия: {condition}")
         return WebDriverWait(self.driver, 5).until(condition)
+
+    @allure.step("Ввод значений {locator}:{value}")
+    def send_keys_for_fields(self, locator, value):
+        self.logger.info(f"Ввод значений {locator}:{value}")
+        element = self.wait_element_visible(locator)
+        element.clear()
+        element.send_keys(value)

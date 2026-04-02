@@ -1,10 +1,14 @@
 from selenium.webdriver.common.by import By
 from page_object.elements.base_element import BaseElement
 import allure
+from page_object.base_page import BasePage
 
 
+class LoginForm(BasePage):
+    def __init__(self, page: BasePage):
+        self.page = page
+        self.driver = page.driver
 
-class LoginForm(BaseElement):
     EMAIL = (By.ID, "email")
     PASSWORD = (By.ID, "passwd")
     SUBMIT = (By.ID, "submit_login")
@@ -14,12 +18,8 @@ class LoginForm(BaseElement):
     @allure.step("Вход пользователя с username: {username}")
     def login(self, username, password):
         self.logger.info(f"Вход пользователя: {username}")
-        login_items = {
-            self.EMAIL: username,
-            self.PASSWORD: password,
-        }
-
-        self.send_keys(login_items)
+        self.send_keys_for_fields(self.EMAIL, username)
+        self.send_keys_for_fields(self.PASSWORD, password)
         self.click(self.SUBMIT)
 
     @allure.step("Выход пользователя")

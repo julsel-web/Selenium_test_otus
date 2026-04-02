@@ -2,10 +2,14 @@ import random
 import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from page_object.elements.base_element import BaseElement
+from page_object.base_page import BasePage
 
 
-class MainPage(BaseElement):
+class MainPage(BasePage):
+    def __init__(self, page: BasePage):
+        self.page = page
+        self.driver = page.driver
+
     PRODUCTS = (By.CSS_SELECTOR, "div.js-product")
     CURRENCY_DROPDOWN = (By.CSS_SELECTOR, "button[aria-label='Currency dropdown']")
     CURRENT_PRICE = (By.CSS_SELECTOR, "div.current-price")

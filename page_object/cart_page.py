@@ -1,9 +1,13 @@
 from selenium.webdriver.common.by import By
 import allure
-from page_object.elements.base_element import BaseElement
+from page_object.base_page import BasePage
 
 
-class CartPage(BaseElement):
+class CartPage(BasePage):
+    def __init__(self, page: BasePage):
+        self.page = page
+        self.driver = page.driver
+
     PRODUCT_TO_CART = (By.CSS_SELECTOR, "div.product-line-info a.label")
 
     @allure.step("Проверка товара в корзине")

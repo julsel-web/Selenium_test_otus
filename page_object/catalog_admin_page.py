@@ -2,10 +2,14 @@ import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from page_object.elements.base_element import BaseElement
+from page_object.base_page import BasePage
 
 
-class CatalogAdminPage(BaseElement):
+class CatalogAdminPage(BasePage):
+    def __init__(self, page: BasePage):
+        self.page = page
+        self.driver = page.driver
+
     CATALOG = (By.CSS_SELECTOR, "#subtab-AdminCatalog")
     PRODUCTS = (By.CSS_SELECTOR, "#subtab-AdminProducts > a")
     AllPRODUCTS = (By.CSS_SELECTOR, "a.text-primary.text-nowrap")
@@ -89,6 +93,12 @@ class CatalogAdminPage(BaseElement):
         self.logger.info(f"Продукт {name} добавлен")
         return name
 
+    @allure.step("Проверка добавления продукта: {name}")
+    def checkout_add_new_card(self, name):
+        self.logger.info(f"Проверка наличия продукта: {name}")
+        products = self.find_all_products()
+        assert name in products
+
     @allure.step("Удаление продукта: {product_name}")
     def delete_products(self, product_name):
         self.logger.info(f"Удаление продукта: {product_name}")
@@ -99,3 +109,8 @@ class CatalogAdminPage(BaseElement):
         self.click(self.BTNDELETE)
         self.logger.info(f"Продукт {product_name} удалён")
         return product_name
+
+    @allure.step("Проверка удаления продукта: {name}")
+    def checkout_delete_product(self, name):
+        self.logger.info(f"Проверка отсутствия продукта: {name}")
+        assert name not in products
