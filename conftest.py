@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.service import Service as FFService
 from selenium.webdriver.firefox.options import Options as FFOptions
+from page_object.base_page import BasePage
 
 
 def pytest_addoption(parser):
@@ -16,6 +17,9 @@ def pytest_addoption(parser):
 def base_url(request):
     return request.config.getoption("base_url")
 
+@pytest.fixture
+def page(driver, base_url):
+    return BasePage(driver, base_url)
 
 @pytest.fixture(scope="function")
 def driver(request):

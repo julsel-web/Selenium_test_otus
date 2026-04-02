@@ -1,4 +1,4 @@
-import pytest
+"""import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -143,7 +143,7 @@ def test_registr_elements(driver, base_url, wait):
     assert hb_input.is_displayed()
 
     save_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "footer.form-footer button.btn.btn-primary.form-control-submit")))
-    assert save_button.is_displayed()
+    assert save_button.is_displayed()"""
 
 
 

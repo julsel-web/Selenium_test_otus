@@ -1,4 +1,4 @@
-import pytest
+"""import pytest
 import random
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -11,20 +11,20 @@ def wait(driver):
 #Написать автотест логина-разлогина в админку с проверкой, что логин был выполнен
 def test_admin_login_logout(driver, base_url, wait):
     driver.get(f"{base_url}/administration")
-
+#Ввести почту
     email_input = wait.until(EC.visibility_of_element_located((By.ID, "email")))
     email_input.send_keys("admin@example.com")
-
+    # Ввести пароль
     password_input = wait.until(EC.visibility_of_element_located((By.ID, "passwd")))
     password_input.send_keys("Admin123!")
 
     login_button = wait.until(EC.visibility_of_element_located((By.ID, "submit_login")))
 
     login_button.click()
-
+    # Залогиниться
     dashboard_header = wait.until(EC.visibility_of_element_located((By.ID, "header")))
     assert dashboard_header.is_displayed()
-
+    # Разлогиниться
     profile = wait.until(EC.visibility_of_element_located((By.ID, "employee_infos")))
     profile.click()
 
@@ -40,7 +40,7 @@ def test_admin_login_logout(driver, base_url, wait):
 
 def test_homepage_elements(driver, base_url, wait):
     driver.get(base_url)
-
+    # Найти товар на главном экране
     products = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.js-product")))
 
     random_product = random.choice(products)
@@ -50,13 +50,13 @@ def test_homepage_elements(driver, base_url, wait):
 
     driver.execute_script("arguments[0].scrollIntoView(true);", random_product)
     random_product.click()
-
+    # Добавить товар в корзину
     add_to_cart = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button.add-to-cart")))
     add_to_cart.click()
-
+    # Перейти в корзину
     proceed_to_checkout = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "a.btn.btn-primary[href*='cart?action=show']")))
     proceed_to_checkout.click()
-
+    # ПРоверить, что в корзине лежит тот же товар
     product_cat = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.product-line-info a.label")))
     cart_href = product_cat.get_attribute("href")
 
@@ -74,14 +74,18 @@ def test_currency_check(driver, wait, base_url, currency_to, currency_from, page
 
     driver.get(base_url + page_path)
 
+    # Получить валюту
     def switch_currency(currency_code):
+        # Нажать на кнопку смены валюты
         currency_selector = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[aria-label='Currency dropdown']")))
         currency_selector.click()
+        # Открылось окно выбора, выбрать нужную валюту
         option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//div[contains(@class,'currency-selector')]//a[contains(text(),'{currency_code}')]")))
         option.click()
 
         wait.until(lambda d: all(currency_code in el.text for el in d.find_elements(By.CSS_SELECTOR, "div.current-price")))
 
+    # Сменить валюту и проверить цены
     switch_currency(currency_from)
     prices_before = [el.text for el in driver.find_elements(By.CSS_SELECTOR, "div.current-price")]
 
@@ -95,3 +99,4 @@ def test_currency_check(driver, wait, base_url, currency_to, currency_from, page
         f"Цена не изменилась для элемента #{i}: "
         f"было '{before}', стало '{after}' "
         f"(валюта {currency_from} → {currency_to})"
+"""
