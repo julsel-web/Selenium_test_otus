@@ -14,8 +14,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN python3 -m ensurepip
-RUN python3 -m pip install --upgrade pip setuptools wheel
 
 WORKDIR /my_test
 
@@ -26,5 +24,5 @@ RUN python3 -m pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["pytest"]
-CMD ["-v", "--headless"]
+ENV PYTHONPATH=/my_test
+CMD ["pytest","-v", "--headless"]
