@@ -1,0 +1,16 @@
+{
+  "chrome": {
+    "120.0": {
+      "image": "selenoid/vnc:chrome_120.0-arm64",
+      "port": "4444",
+      "path": "/"
+    }
+  },
+  "firefox": {
+    "119.0": {
+      "image": "selenoid/vnc:firefox_119.0-arm64",
+      "port": "4444",
+      "path": "/"
+    }
+  }
+}

@@ -62,6 +62,31 @@ services:
         echo "Done."
       '
 
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "4444:4444"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./browsers.json:/etc/selenoid/browsers.json:ro"
+      - "./videos:/my_test/videos"
+    command:
+      - "-limit"
+      - "5"
+      - "-video-output-dir"
+      - "/my_test/videos"
+      - "unix:///var/run/docker.sock"
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:latest-release
+    platform: linux/amd64
+    restart: always
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+
   tests:
     build:
       context: .
@@ -71,15 +96,19 @@ services:
     volumes:
       - .:/my_test
       - ps_data:/var/www/html
-
+      - ./screenshots:/my_test/screenshots
+      - ./videos:/my_test/videos
     environment:
       - DISPLAY=:99
       - PYTHONPATH=/my_test
+      - REMOTE=true
+      - REMOTE_URL=http://selenoid:4444/wd/hub
     depends_on:
       - prestashop_postinstall
-      - db
+      - selenoid
     command: ["pytest", "-v", "--headless"]
 
 volumes:
   db_data:
   ps_data:
+  videos:
