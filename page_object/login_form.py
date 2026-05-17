@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-from page_object.elements.base_element import BaseElement
 import allure
 from page_object.base_page import BasePage
 

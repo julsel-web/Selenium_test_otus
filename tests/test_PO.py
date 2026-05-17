@@ -1,5 +1,6 @@
 import pytest
 import uuid
+import allure
 
 from page_object.main_page import MainPage
 from page_object.login_form import LoginForm

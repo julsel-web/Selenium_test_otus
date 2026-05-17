@@ -14,11 +14,12 @@ os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser", default="chrome", help="Браузер: chrome или ff")
-    parser.addoption("--headless", action="store_true", help="Запуск браузера в headless")
-    parser.addoption("--base-url", default="http://host.docker.internal:8081", help="Базовый URL сайта")
-    parser.addoption("--remote", action="store_true", help="Использовать Selenoid")
-    parser.addoption("--remote-url", default="http://selenoid:4444/wd/hub", help="URL Selenoid RemoteWebDriver")
+        parser.addoption("--browser", default="chrome", help="Браузер: chrome или firefox")
+        parser.addoption("--browser-version", default="120.0", help="Версия браузера для Selenoid")
+        parser.addoption("--headless", action="store_true", help="Запуск браузера в headless")
+        parser.addoption("--base-url", default="http://host.docker.internal:8081", help="Базовый URL сайта")
+        parser.addoption("--remote", action="store_true", help="Использовать Selenoid")
+        parser.addoption("--remote-url", default="http://selenoid:4444/wd/hub", help="URL Selenoid RemoteWebDriver")
 
 
 @pytest.fixture()
@@ -34,6 +35,7 @@ def page(driver, base_url):
 @pytest.fixture(scope="function")
 def driver(request):
     browser_name = request.config.getoption("browser")
+    browser_version = request.config.getoption("browser_version")
     headless = request.config.getoption("headless")
     is_remote = request.config.getoption("remote")
     remote_url = request.config.getoption("remote_url")
@@ -51,13 +53,11 @@ def driver(request):
         else:
             raise RuntimeError(f"Selenoid недоступен по {remote_url}")
 
-        browser_version = "120.0" if browser_name == "chrome" else "119.0"
-
         if browser_name == "chrome":
             options = ChromeOptions()
             if headless:
                 options.add_argument("--headless=new")
-        elif browser_name == "ff":
+        elif browser_name == "firefox":
             options = FFOptions()
             if headless:
                 options.add_argument("--headless")
