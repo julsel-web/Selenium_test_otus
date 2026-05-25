@@ -1,0 +1,6 @@
+git
+workflow-aggregator
+job-dsl
+configuration-as-code
+htmlpublisher
+antisamy-markup-formatter
